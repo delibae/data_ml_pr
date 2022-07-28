@@ -20,7 +20,7 @@ driver = webdriver.Chrome("E:\python\data_collect\data_ml_pr\chromedriver.exe")
 driver.get("https://nid.naver.com/nidlogin.login?url=http://section.cafe.naver.com")
 time.sleep(1)
 
-pw = "34388072"
+pw = "85744570"
 
 driver.find_element_by_id("ones").click()
 user_id = driver.find_element_by_id("disposable")
@@ -46,16 +46,45 @@ driver.switch_to.frame("cafe_main")
 driver.find_element_by_css_selector("#listSizeSelectDiv").click()
 driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/div[4]/ul/li[7]/a").click()
 
-# driver.switch_to.frame('cafe_main')
+driver.get("https://cafe.naver.com/healingdogcat/814015")
 
-driver.find_element_by_xpath("/html/body/div[1]/div/div[4]/table/tbody/tr[5]/td[1]/div[2]/div/a[1]").click()
+# driver.find_element_by_xpath("/html/body/div[1]/div/div[4]/table/tbody/tr[5]/td[1]/div[2]/div/a[1]").click()
 
 res_list = []
 # Beautifulsoup 활용
 # article도 switch_to.frame이 필수
-# driver.switch_to.frame('cafe_main')
 
 time.sleep(2)
+driver.switch_to.frame("cafe_main")
+soup = BeautifulSoup(driver.page_source, 'html.parser')
+    # 게시글에서 제목 추출
+title = soup.select_one('#app > div > div > div.ArticleContentBox > div.article_header > div.ArticleTitle > div > h3').get_text()
+
+print(title)
+
+    # 내용을 하나의 텍스트로 만든다. (띄어쓰기 단위)
+content_tags = soup.select_one('#SE-728fbbcb-c2ea-4331-8311-15d9c09658bb').select('p')
+content = ' '.join([ tags.get_text() for tags in content_tags ])
+    # dict형태로 만들어 결과 list에 저장
+res_list.append({'title' : title, 'content' : content})
+    # time.sleep 작업도 필요하다.
+# driver.close()
+
+# print(res_list)
+print(title)
+print(content_tags)
+print(res_list)
+
+driver.get("https://cafe.naver.com/ArticleRead.nhn?clubid=25273665&page=1&userDisplay=50&menuid=44&boardtype=L&articleid=814061&referrerAllArticles=false")
+
+# driver.find_element_by_xpath("/html/body/div[1]/div/div[4]/table/tbody/tr[5]/td[1]/div[2]/div/a[1]").click()
+
+res_list = []
+# Beautifulsoup 활용
+# article도 switch_to.frame이 필수
+
+time.sleep(2)
+driver.switch_to.frame("cafe_main")
 soup = BeautifulSoup(driver.page_source, 'html.parser')
     # 게시글에서 제목 추출
 title = soup.select_one('#app > div > div > div.ArticleContentBox > div.article_header > div.ArticleTitle > div > h3').get_text()
