@@ -16,7 +16,7 @@ import math
 keyword = "동물병원 질문과 정보♡"
 
 # 크롤링 할 글 입력
-crawling_no = 3000
+crawling_no = 10
 
 # 크롬 웹브라우저 실행
 driver = webdriver.Chrome("E:\python\data_collect\data_ml_pr\chromedriver.exe")
@@ -30,8 +30,7 @@ driver.find_element_by_id("ones").click()
 user_id = driver.find_element_by_id("disposable")
 
 #일회용 로그인 입력
-user_id.send_keys("53645039")
-
+user_id.send_keys("85006940")
 driver.find_element_by_id("otnlog.login").click()
 time.sleep(2)
 
@@ -47,8 +46,8 @@ driver.find_element_by_link_text(keyword).click()
 driver.switch_to.frame("cafe_main")
 
 # 게시글 50개씩
-driver.find_element_by_css_selector("#listSizeSelectDiv").click()
-driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/div[4]/ul/li[7]/a").click()
+# driver.find_element_by_css_selector("#listSizeSelectDiv").click()
+# driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/div[4]/ul/li[7]/a").click()
 
 crawling_list = []
 no_app = []
@@ -111,8 +110,10 @@ like_list = like_list[notifi_len:]
 href_list = href_list[notifi_len:]
 
 res_list = []
-
+count = 0
 for link in href_list:
+    count += 1
+    print(count)
     try:
         driver.get(link)
         time.sleep(3)
@@ -125,25 +126,56 @@ for link in href_list:
         try:
             content_tags = soup.select_one('#app > div > div > div.ArticleContentBox > div.article_container > div.article_viewer').select('p')
             content_tags = [ tags.get_text() for tags in content_tags ]
+
         except:
             content_tags = ''
+            print("error1")
     except:
         content_tags = ''
-    try:
-        # 데이터 전처리 입력
-        content_tags = content_tags[8:]
-        content_tags.remove('\u200b')
-    except:
-        content_tags = ''
+        print("error2")
+    # try:
+    #     # 데이터 전처리 입력
+    #     content_tags = content_tags[8:]
+    #     content_tags.remove('\u200b')
+    #     content_
+    #     print("new setup")
+    #     print(content_tags)
+    # except:
+    #     content_tags = ''
+    #     print("여긴가????????????")
+    # content = ' '.join(content_tags)
+    # if '■' or '──────────────────' in content:
+    #     print("아님 여기????????")
+    #     content = ''
+    de_list = []
+    if content_tags != '':
+        for i in range(len(content_tags)):
+            if content_tags[i].find('■') != -1 or content_tags[i].find('☆') != -1 or content_tags[i].find('──────────────────') != -1:
+                print("범인은 너!")
+                print(content_tags[i])
+                de_list.append(i)
+                print("사라져버려!")
+
+        # for i in range(len(content_tags)):
+        #     if '☆' in content_tags[i]:
+        #         print("범인은 너!")
+        #         print(content_tags[i])
+        #         de_list.append(i)
+        #         print("사라져버려!")
+    de_list.sort(reverse=True)
+    for i in de_list:
+        del content_tags[i]
     content = ' '.join(content_tags)
-    if '■' or '──────────────────' in content:
-        content = ''
     # dict형태로 만들어 결과 list에 저장
     # res_list.append({'title' : title, 'content' : content})
+    # print("최조오ㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗ")
+    # print(content)
     res_list.append(content)
 
 driver.close()
 
+# print(no_list)
+# print(title_list)
 
 # 판다스화
 df = pd.DataFrame({'번호':no_list,
