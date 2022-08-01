@@ -109,6 +109,8 @@ nick_list = nick_list[notifi_len:]
 like_list = like_list[notifi_len:]
 href_list = href_list[notifi_len:]
 
+print(href_list)
+
 res_list = []
 count = 0
 for link in href_list:
@@ -159,7 +161,7 @@ df = pd.DataFrame({'번호':no_list,
                    '좋아요':like_list,
                    '링크':href_list,
                    '글내용':res_list})
-# 필독, 공지 삭제
+# 필독, 공지, 빈 글 내용 삭제
 df = df.drop(df[df['번호'] == '필독'].index)
 df = df.drop(df[df['번호'] == '공지'].index)
 df = df.drop(df[df['글내용'] == ''].index)

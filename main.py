@@ -16,7 +16,7 @@ import math
 keyword = "동물병원 질문과 정보♡"
 
 # 크롤링 할 글 입력
-crawling_no = 200
+crawling_no = 4000
 
 # 크롬 웹브라우저 실행
 driver = webdriver.Chrome("E:\python\data_collect\data_ml_pr\chromedriver.exe")
@@ -30,7 +30,7 @@ driver.find_element_by_id("ones").click()
 user_id = driver.find_element_by_id("disposable")
 
 #일회용 로그인 입력
-user_id.send_keys("41623004")
+user_id.send_keys("47097011")
 driver.find_element_by_id("otnlog.login").click()
 time.sleep(2)
 
@@ -67,7 +67,7 @@ try:
     for page in range(1,crawling_page):
         # 페이지 클릭
         driver.find_element_by_link_text(str(page)).click()
-        time.sleep(1)
+        time.sleep(2)
         # 글 번호 수집
         no = [i.text for i in driver.find_elements_by_css_selector('.td_article')]
         no_split = [ni.split()[0] for ni in no]
@@ -101,13 +101,22 @@ nick_list = sum(nick_app, [])
 like_list = sum(like_app, [])
 href_list = sum(href_app,[])
 
+print(href_list)
+print("길이"*10)
+print(len(href_list))
+
 #공지 없애기 입력
-notifi_len = 15
+notifi_len = 16
 no_list = no_list[notifi_len:]
 title_list = title_list[notifi_len:]
 nick_list = nick_list[notifi_len:]
 like_list = like_list[notifi_len:]
 href_list = href_list[notifi_len:]
+
+print(href_list)
+print("길이"*10)
+print(len(href_list))
+
 
 res_list = []
 count = 0
@@ -150,8 +159,6 @@ for link in href_list:
     # res_list.append({'title' : title, 'content' : content})
     res_list.append(content)
 
-driver.close()
-
 # 판다스화
 df = pd.DataFrame({'번호':no_list,
                    '제목':title_list,
@@ -170,3 +177,7 @@ print('글 ', len(df), '개 크롤링 완료. \n크롤링 종료.', sep='')
 
 # 저장
 df.to_excel('crawler_naver cafe_게시판 {}.xlsx'.format(keyword))
+
+
+driver.close()
+
